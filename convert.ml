@@ -30,8 +30,9 @@ type outputFormat =
   | SMTLib
   | IntTRS
   | T2
+  | KoAT
 
-type runMode = 
+type runMode =
   | Validate
   | ConvertTo of outputFormat
 
@@ -42,11 +43,11 @@ let warningsAsErrors = ref false
 let terminationOnly = ref false
 
 let rec parseFormat s =
-  match (String.lowercase s) with
+  match (String.lowercase_ascii s) with
   | "inttrs"
   | "int-trs"
-  | "kittel"
-  | "koat"    -> IntTRS
+  | "kittel"  -> IntTRS
+  | "koat"    -> KoAT
   | "t2"      -> T2
   | "smtlib"
   | "smt"     -> SMTLib
@@ -68,7 +69,7 @@ and speclist =
     ("--help",        Arg.Unit   (fun () -> print_usage (); exit 1), "");
     ("-help",         Arg.Unit   (fun () -> print_usage (); exit 1), "       - Display this list of options");
   ]
-and usage = 
+and usage =
   "usage: " ^ Sys.argv.(0) ^ " [--validate|--convertto <format>] <filename>"
 and print_usage () =
   Arg.usage speclist usage
@@ -96,11 +97,14 @@ let main () =
 	| ConvertTo IntTRS ->
           IntTRSFormat.output p !terminationOnly;
           exit 0;
+  | ConvertTo KoAT ->
+          KoATFormat.output p !terminationOnly;
+          exit 0;
 	| ConvertTo T2 ->
           T2Format.output p !terminationOnly;
           exit 0;
-      with 
-      | Parser.ParseException msg -> 
+      with
+      | Parser.ParseException msg ->
 	(
 	  Printf.printf "File %s invalid: %s\n" !filename msg;
 	  exit 1;

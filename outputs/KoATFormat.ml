@@ -34,8 +34,8 @@ exception IntTRSOutputException of string
 
 let rec constraintToIntTRSString c =
   match c with
-  | BoolTerm.True -> "(0 <= 0)"
-  | BoolTerm.False -> "(1 <= 0)"
+  | BoolTerm.True -> "0 <= 0"
+  | BoolTerm.False -> "1 <= 0"
   | BoolTerm.And args ->
     String.concat " && " (List.map constraintToIntTRSString args)
   | BoolTerm.Exists (_, body) -> (* Fresh variables are implictly existentially quantified in conditions *)

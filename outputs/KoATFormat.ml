@@ -54,7 +54,7 @@ let output p terminationOnly =
   if terminationOnly && List.length (Program.getAllCalls p) > 0 then
     raise (IntTRSOutputException "IntTRS format does not support true recursion. A termination-preserving abstraction can be activated with --termination-only.");
 
-  let remove_bad_chars = Str.global_replace (Str.regexp "\\^\\|^_+\\|!") "" in
+  let remove_bad_chars = Str.global_replace (Str.regexp "\\^") "" in
 
   let ppSortedVarList sep l = String.concat sep ((List.map remove_bad_chars) (List.map fst l)) in
 
